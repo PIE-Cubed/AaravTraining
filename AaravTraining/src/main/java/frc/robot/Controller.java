@@ -18,7 +18,6 @@ public class Controller {
 
   /* Constructor */
   public Controller() {
-
     manipulatorPort = getManipulatorPort();
     driverPort = getDriverPort();
 
@@ -29,11 +28,6 @@ public class Controller {
     if (driverPort != UNKNOWN_PORT) {
       driverController = new XboxController(driverPort);
     }
-
-    /*
-     * Debug to get actual controller names for constants above.
-     * This can be commented once we have the names.
-     */
     testPrintControllerNames();
   }
 
@@ -41,14 +35,14 @@ public class Controller {
     int portNum;
     GenericHID genericController;
 
-    for (portNum = 0; portNum < 6; portNum++) {
+    for (portNum = 0; portNum <= 5; portNum++) {
       genericController = new GenericHID(portNum);
       if (genericController.getName().equals(MANIP_NAME) == true) {
         return portNum;
       }
     }
 
-    System.out.println("ERROR: Could not determine Manipulator Controller USB port!!!");
+    System.out.println("Could not find port for Manipulater Controller!");
     return UNKNOWN_PORT;
   }
 
@@ -56,34 +50,31 @@ public class Controller {
     int portNum;
     GenericHID genericController;
 
-    for (portNum = 0; portNum < 6; portNum++) {
+    for (portNum = 0; portNum <= 5; portNum++) {
       genericController = new GenericHID(portNum);
       if (genericController.getName().equals(DRIVER_NAME) == true) {
         return portNum;
       }
     }
 
-    System.out.println("ERROR: Could not determine Driver Controller USB port!!!");
+    System.out.println("Could not find port for Driver Controller!");
     return UNKNOWN_PORT;
   }
 
   public void updateControllers() {
-    int currentManipulatorPort;
-    int currentDriverPort;
+    int currentManipPort = getManipulatorPort();
+    int currentDriverPort = getDriverPort();
 
-    currentManipulatorPort = getManipulatorPort();
-    currentDriverPort = getDriverPort();
-
-    if (manipulatorPort != currentManipulatorPort) {
-      manipulatorController = new XboxController(currentManipulatorPort);
-      manipulatorPort = currentManipulatorPort;
-      System.out.println("Manipulator Controller now on port:" + manipulatorPort);
+    if (currentManipPort != manipulatorPort) {
+      manipulatorController = new XboxController(currentManipPort);
+      manipulatorPort = currentManipPort;
+      System.out.println("Manipulater port is now: " + manipulatorPort);
     }
 
-    if (driverPort != currentDriverPort) {
-      driverController = new XboxController(currentDriverPort);
+    if (currentDriverPort != driverPort) {
+      driverController = new XboxController(currentManipPort);
       driverPort = currentDriverPort;
-      System.out.println("Driver Controller now on port:" + driverPort);
+      System.out.println("Driver port is now: " + driverPort);
     }
   }
 

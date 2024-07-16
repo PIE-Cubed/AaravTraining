@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -21,22 +17,24 @@ public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
-  private final SendableChooser<String> m_chooser;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  private Controller controller;
+  private long initTime;
+
+  public Robot() {
+    controller = new Controller();
+  }
 
   /**
    * This function is run when the robot is first started up and should be used
    * for any
    * initialization code.
    */
-  public Robot() {
-    m_chooser = new SendableChooser<>();
-  }
-
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    m_chooser.addOption("My Auto2", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
 
@@ -100,32 +98,34 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+    initTime = System.currentTimeMillis();
   }
 
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
+    long currentTime;
+
+    currentTime = System.currentTimeMillis();
+    if ((currentTime - initTime) > 1000) {
+      controller.updateControllers();
+      initTime = currentTime;
+    }
   }
 
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-    SmartDashboard.putNumber("Hi!!!", 0.99);
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    System.out.println("Hello World");
-    double hiKeyValue = SmartDashboard.getNumber("Hi!!!", 0.00);
-    SmartDashboard.putNumber("fgaghsghs", hiKeyValue);
-    System.out.println(m_chooser.getSelected());
   }
 
   /** This function is called once when the robot is first started up. */
